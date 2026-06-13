@@ -1,3 +1,9 @@
+const dns = require('dns');
+try {
+  dns.setServers(['1.1.1.1', '8.8.8.8']);
+} catch (e) {
+  // Ignore
+}
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('../models/User');
@@ -10,7 +16,8 @@ const Order = require('../models/Order');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
 
-dotenv.config({ path: '../.env' }); // load from parent relative or local
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, '../.env') }); // load from parent relative or local
 
 const seedData = async (shouldCloseConnection = true) => {
   try {
