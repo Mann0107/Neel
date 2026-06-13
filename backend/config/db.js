@@ -10,6 +10,16 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 3000,
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    
+    // Auto-seed if database is empty (e.g. fresh MongoDB Atlas cluster)
+    const User = require('../models/User');
+    const userCount = await User.countDocuments();
+    if (userCount === 0) {
+      console.log('Atlas/Production database is empty. Auto-seeding default credentials and products...');
+      const seedData = require('../utils/seeder');
+      await seedData(false);
+      console.log('Auto-seeding complete.');
+    }
   } catch (error) {
     console.log('\n================================================================');
     console.log('NOTICE: Local MongoDB service is not running or refused connection.');
