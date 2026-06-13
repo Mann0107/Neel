@@ -44,8 +44,11 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 
-// Serve uploads folder statically
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+// Serve uploads folder statically (use /tmp/uploads on Vercel)
+const uploadsFolder = process.env.VERCEL
+  ? path.join('/tmp', 'uploads')
+  : path.join(__dirname, '/uploads');
+app.use('/uploads', express.static(uploadsFolder));
 
 // Root route
 app.get('/', (req, res) => {

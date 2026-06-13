@@ -4,9 +4,10 @@ let mongod = null;
 
 const connectDB = async () => {
   try {
-    // Attempt standard connection first with a fast timeout (3 seconds)
+    // Attempt standard connection first with a fast timeout (3 seconds) locally, or 30 seconds on Vercel
+    const timeout = process.env.VERCEL ? 30000 : 3000;
     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/fashionkart', {
-      serverSelectionTimeoutMS: 3000,
+      serverSelectionTimeoutMS: timeout,
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     
@@ -22,6 +23,10 @@ const connectDB = async () => {
       console.log('Auto-seeding complete.');
     }
   } catch (error) {
+    if (process.env.VERCEL) {
+      console.error('Failed to connect to MongoDB on Vercel:', error);
+      throw error;
+    }
     console.log('\n================================================================');
     console.log('NOTICE: Local MongoDB service is not running or refused connection.');
     console.log('Starting an In-Memory MongoDB Server for fallback execution...');
