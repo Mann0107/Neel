@@ -1,4 +1,5 @@
 @echo off
+set "PATH=d:\123\git\cmd;%PATH%"
 title Push Neel India to GitHub
 color 0B
 echo ======================================================================
